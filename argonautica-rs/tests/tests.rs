@@ -66,28 +66,33 @@ fn build_c<P: AsRef<Path>>(build_dir: P) {
 }
 
 fn generate_args(input: &Input) -> Vec<String> {
-    let rng = rand::thread_rng();
     let additional_data = if input.additional_data_len == 0 {
         "".to_string()
     } else {
-        rng.sample_iter(&Alphanumeric)
+        rand::thread_rng()
+            .sample_iter(&Alphanumeric)
             .take(input.additional_data_len)
+            .map(char::from)
             .collect::<String>()
     };
     let secret_key = if input.secret_key_len == 0 {
         "".to_string()
     } else {
-        rng.sample_iter(&Alphanumeric)
+        rand::thread_rng()
+            .sample_iter(&Alphanumeric)
             .take(input.secret_key_len)
+            .map(char::from)
             .collect::<String>()
     };
-    let password = rng
+    let password = rand::thread_rng()
         .sample_iter(&Alphanumeric)
         .take(input.password_len)
+        .map(char::from)
         .collect::<String>();
-    let salt = rng
+    let salt = rand::thread_rng()
         .sample_iter(&Alphanumeric)
         .take(input.salt_len)
+        .map(char::from)
         .collect::<String>();
 
     let flags_string = format!("{}", input.flags);

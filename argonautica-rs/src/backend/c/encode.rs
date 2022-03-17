@@ -16,7 +16,7 @@ pub fn encode_c(hash_raw: &HashRaw) -> Result<String, Error> {
             hash_raw.variant() as ffi::argon2_type,
         )
     };
-    let mut encoded = vec![0 as libc::c_char; encoded_len];
+    let mut encoded = vec![0 as libc::c_char; encoded_len as usize];
     let encoded_ptr = encoded.as_mut_ptr();
     let mut context = ffi::Argon2_Context {
         out: hash_raw.raw_hash_bytes().as_ptr() as *mut u8,
