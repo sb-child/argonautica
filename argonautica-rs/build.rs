@@ -90,8 +90,8 @@ fn main() -> Result<(), failure::Error> {
         .ctypes_prefix("libc")
         .layout_tests(true)
         .raw_line("use libc;")
-        .rust_target(bindgen::RustTarget::Stable_1_25) // TODO: Update when 1.26 is available
-        .rustfmt_bindings(false)
+        .rust_target(bindgen::RustTarget::Stable_1_33)
+        .formatter(bindgen::Formatter::None)
         .generate()
         .map_err(|_| failure::err_msg("failed to generate bindings"))?;
     bindings.write_to_file(file_path)?;
