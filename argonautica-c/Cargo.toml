@@ -1,6 +1,7 @@
 [package]
 name = "argonautica-c"
-version = "0.2.1" # remember to update html_root_url
+version = "0.2.1"      # remember to update html_root_url
+edition = "2021"
 
 authors = ["Brian Myers <brian.carl.myers@gmail.com>"]
 categories = ["algorithms", "api-bindings", "authentication", "cryptography"]
@@ -16,7 +17,7 @@ repository = "https://github.com/bcmyers/argonautica"
 [lib]
 name = "argonautica_c"
 path = "src/lib.rs"
-crate_type = ["cdylib"]
+crate-type = ["cdylib"]
 
 [[bin]]
 name = "generate_bindings"
@@ -27,8 +28,8 @@ simd = ["argonautica/simd"]
 
 [dependencies]
 argonautica = { version = "0.2", path = "../argonautica-rs" }
-cbindgen = "0.9"
-itoa = "0.4"
+cbindgen = "0.27.0"
+itoa = "1.0.11"
 libc = "0.2"
 
 [badges]

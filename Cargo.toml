@@ -1,5 +1,3 @@
 [workspace]
-members = [
-    "argonautica-c",
-    "argonautica-rs",
-]
+members = ["argonautica-c", "argonautica-rs"]
+resolver = "2"
