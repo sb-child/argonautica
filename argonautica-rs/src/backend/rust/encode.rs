@@ -2,8 +2,9 @@ use crate::output::HashRaw;
 
 impl HashRaw {
     pub(crate) fn encode_rust(&self) -> String {
-        let hash_encoded = base64::encode_config(self.raw_hash_bytes(), base64::STANDARD_NO_PAD);
-        let salt_encoded = base64::encode_config(self.raw_salt_bytes(), base64::STANDARD_NO_PAD);
+        use base64::prelude::*;
+        let hash_encoded = BASE64_STANDARD_NO_PAD.encode(self.raw_hash_bytes());
+        let salt_encoded = BASE64_STANDARD_NO_PAD.encode(self.raw_salt_bytes());
         format!(
             "${}$v={}$m={},t={},p={}${}${}",
             self.variant().as_str(),

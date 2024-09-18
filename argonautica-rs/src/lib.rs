@@ -286,8 +286,10 @@ extern crate futures;
 extern crate libc;
 #[macro_use]
 extern crate log;
-#[macro_use]
+
+// #[macro_use]
 extern crate nom;
+
 extern crate num_cpus;
 extern crate rand;
 extern crate scopeguard;

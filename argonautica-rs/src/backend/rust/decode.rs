@@ -1,12 +1,17 @@
+use nom::bytes::complete::{take, take_until};
+use nom::IResult;
+
 use crate::config::{Variant, Version};
 use crate::output::HashRaw;
 use crate::{Error, ErrorKind};
+// use nom::{ named, do_parse, tag };
 
 pub fn decode_rust(hash: &str) -> Result<HashRaw, Error> {
+    use base64::prelude::*;
     let (rest, intermediate) = parse_hash(hash).map_err(|_| {
         Error::new(ErrorKind::HashDecodeError).add_context(format!("Hash: {}", &hash))
     })?;
-    let raw_hash_bytes = base64::decode_config(rest, base64::STANDARD_NO_PAD).map_err(|_| {
+    let raw_hash_bytes = BASE64_STANDARD_NO_PAD.decode(rest).map_err(|_| {
         Error::new(ErrorKind::HashDecodeError).add_context(format!("Hash: {}", &hash))
     })?;
     let hash_raw = HashRaw {
@@ -30,39 +35,87 @@ struct IntermediateStruct {
     raw_salt_bytes: Vec<u8>,
 }
 
-#[rustfmt::skip]
-named!(parse_hash<&str, IntermediateStruct>, do_parse!(
-    take_until!("$") >>
-    take!(1) >>
-    variant: map_res!(take_until!("$"), |x: &str| x.parse::<Variant>()) >>
-    take_until!("$v=") >>
-    take!(3) >>
-    version: map_res!(take_until!("$"), |x: &str| x.parse::<Version>()) >>
-    take_until!("$m=") >>
-    take!(3) >>
-    memory_size: map_res!(take_until!(","), |x: &str| x.parse::<u32>()) >>
-    take_until!(",t=") >>
-    take!(3) >>
-    iterations: map_res!(take_until!(","), |x: &str| x.parse::<u32>()) >>
-    take_until!(",p=") >>
-    take!(3) >>
-    lanes: map_res!(take_until!("$"), |x: &str| x.parse::<u32>()) >>
-    take_until!("$") >>
-    take!(1) >>
-    raw_salt_bytes: map_res!(take_until!("$"), |x: &str| {
-        base64::decode_config(x, base64::STANDARD_NO_PAD)
-    }) >>
-    take_until!("$") >>
-    take!(1) >>
-    (IntermediateStruct {
-        iterations,
-        lanes,
-        memory_size,
-        raw_salt_bytes,
-        variant,
-        version,
-    })
-));
+fn parse_hash(input: &str) -> IResult<&str, IntermediateStruct> {
+    let x = take_until("$")(input)?;
+    let x = take(1usize)(x.0)?;
+
+    let (x, variant) = take_until("$")(x.0)?;
+    let variant = variant.parse::<Variant>().map_err(|_e| {
+        nom::Err::Error(nom::error::Error::new(
+            "Failed to parse variant",
+            nom::error::ErrorKind::Fail,
+        ))
+    })?;
+
+    let x = take_until("$v=")(x)?;
+    let x = take(3usize)(x.0)?;
+    let (x, version) = take_until("$")(x.0)?;
+    let version = version.parse::<Version>().map_err(|_e| {
+        nom::Err::Error(nom::error::Error::new(
+            "Failed to parse version",
+            nom::error::ErrorKind::Fail,
+        ))
+    })?;
+
+    let x = take_until("$m=")(x)?;
+    let x = take(3usize)(x.0)?;
+    let (x, memory_size) = take_until(",")(x.0)?;
+    let memory_size = memory_size.parse::<u32>().map_err(|_e| {
+        nom::Err::Error(nom::error::Error::new(
+            "Failed to parse memory_size",
+            nom::error::ErrorKind::Fail,
+        ))
+    })?;
+
+    let x = take_until(",t=")(x)?;
+    let x = take(3usize)(x.0)?;
+    let (x, iterations) = take_until(",")(x.0)?;
+    let iterations = iterations.parse::<u32>().map_err(|_e| {
+        nom::Err::Error(nom::error::Error::new(
+            "Failed to parse iterations",
+            nom::error::ErrorKind::Fail,
+        ))
+    })?;
+
+    let x = take_until(",p=")(x)?;
+    let x = take(3usize)(x.0)?;
+    let (x, lanes) = take_until("$")(x.0)?;
+    let lanes = lanes.parse::<u32>().map_err(|_e| {
+        nom::Err::Error(nom::error::Error::new(
+            "Failed to parse lanes",
+            nom::error::ErrorKind::Fail,
+        ))
+    })?;
+
+    use base64::prelude::*;
+
+    let x = take_until("$")(x)?;
+    let x = take(1usize)(x.0)?;
+    let (x, raw_salt_bytes) = take_until("$")(x.0)?;
+    let raw_salt_bytes = BASE64_STANDARD_NO_PAD
+        .decode(raw_salt_bytes)
+        .map_err(|_e| {
+            nom::Err::Error(nom::error::Error::new(
+                "Failed to parse raw_salt_bytes",
+                nom::error::ErrorKind::Fail,
+            ))
+        })?;
+
+    let x = take_until("$")(x)?;
+    let x = take(1usize)(x.0)?;
+
+    return Ok((
+        x.0,
+        IntermediateStruct {
+            variant,
+            version,
+            memory_size,
+            iterations,
+            lanes,
+            raw_salt_bytes,
+        },
+    ));
+}
 
 #[cfg(test)]
 mod tests {

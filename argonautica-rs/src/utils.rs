@@ -22,10 +22,11 @@ pub fn generate_random_bytes(len: u32) -> Result<Vec<u8>, Error> {
 /// is doing.
 pub fn generate_random_base64_encoded_string(len: u32) -> Result<String, Error> {
     let mut bytes = vec![0u8; len as usize];
+    use base64::prelude::*;
     OsRng
         .try_fill_bytes(&mut bytes)
         .map_err(|e| Error::new(ErrorKind::OsRngError).add_context(format!("{}", e)))?;
-    let output = base64::encode_config(&bytes, base64::STANDARD);
+    let output = BASE64_STANDARD.encode(&bytes);
     Ok(output)
 }
 
@@ -36,12 +37,12 @@ pub fn generate_random_base64_encoded_string(len: u32) -> Result<String, Error> 
 /// function is doing.
 pub fn generate_random_base64_encoded_string_config(
     len: u32,
-    config: base64::Config,
+    config: &impl base64::Engine,
 ) -> Result<String, Error> {
     let mut bytes = vec![0u8; len as usize];
     OsRng
         .try_fill_bytes(&mut bytes)
         .map_err(|e| Error::new(ErrorKind::OsRngError).add_context(format!("{}", e)))?;
-    let output = base64::encode_config(&bytes, config);
+    let output = base64::Engine::encode(config, &bytes);
     Ok(output)
 }
