@@ -17,6 +17,14 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(feature = "build_static")] {
+        const IS_STATIC: bool = true;
+    } else {
+        const IS_STATIC: bool = false;
+    }
+}
+
 fn main() -> Result<(), failure::Error> {
     let temp = tempfile::tempdir()?;
     let temp_dir = temp.path();
@@ -68,6 +76,9 @@ fn main() -> Result<(), failure::Error> {
             .flag_if_supported("-march=native")
             .flag_if_supported("-fno-stack-check");
     }
+    if IS_STATIC {
+        builder.flag_if_supported("-static");
+    }
     let opt_level = env::var("OPT_LEVEL")?.parse::<usize>()?;
     if opt_level < 3 {
         builder.flag_if_supported("-g");
@@ -90,7 +101,7 @@ fn main() -> Result<(), failure::Error> {
         .ctypes_prefix("libc")
         .layout_tests(true)
         .raw_line("use libc;")
-        .rust_target(bindgen::RustTarget::Stable_1_33)
+        .rust_target(bindgen::RustTarget::Stable_1_77)
         .formatter(bindgen::Formatter::None)
         .generate()
         .map_err(|_| failure::err_msg("failed to generate bindings"))?;
