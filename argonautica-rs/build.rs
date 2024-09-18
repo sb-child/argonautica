@@ -87,7 +87,7 @@ fn main() -> Result<(), failure::Error> {
     if opt_level < 3 {
         builder.flag_if_supported("-g");
     }
-    builder.debug(true);
+    // builder.debug(true);
     builder.compile("argon2");
 
     let out_dir_string = env::var("OUT_DIR")?;
