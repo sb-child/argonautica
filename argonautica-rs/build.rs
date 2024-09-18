@@ -29,7 +29,9 @@ fn main() -> Result<(), failure::Error> {
     let temp = tempfile::tempdir()?;
     let temp_dir = temp.path();
     let temp_dir_str = temp_dir.to_str().unwrap();
-
+    if IS_STATIC {
+        println!("cargo:rustc-link-search={}", "/usr/lib/llvm17/lib");
+    }
     let blamka_header = if IS_SIMD {
         "phc-winner-argon2/src/blake2/blamka-round-opt.h"
     } else {
