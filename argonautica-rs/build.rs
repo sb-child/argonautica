@@ -31,6 +31,7 @@ fn main() -> Result<(), failure::Error> {
     let temp_dir_str = temp_dir.to_str().unwrap();
     if IS_STATIC {
         println!("cargo:rustc-link-search={}", "/usr/lib/llvm17/lib");
+        println!("cargo:rustc-flags=-l dylib=LLVM-17");
     }
     let blamka_header = if IS_SIMD {
         "phc-winner-argon2/src/blake2/blamka-round-opt.h"
@@ -79,12 +80,14 @@ fn main() -> Result<(), failure::Error> {
             .flag_if_supported("-fno-stack-check");
     }
     if IS_STATIC {
-        builder.flag_if_supported("-static");
+        builder.static_flag(true);
+        // builder.shared_flag(shared_flag);
     }
     let opt_level = env::var("OPT_LEVEL")?.parse::<usize>()?;
     if opt_level < 3 {
         builder.flag_if_supported("-g");
     }
+    builder.debug(true);
     builder.compile("argon2");
 
     let out_dir_string = env::var("OUT_DIR")?;
