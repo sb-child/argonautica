@@ -6,7 +6,7 @@ use argonautica::config::Backend;
 use argonautica::Verifier;
 use libc::{c_char, c_int};
 
-use {argonautica_backend_t, argonautica_error_t};
+use {crate::argonautica_backend_t, crate::argonautica_error_t};
 
 /// Function that verifies a password against a hash. It will modify the provided `is_valid` int
 /// and return an `argonautica_error_t` indicating whether or not the verification was successful.

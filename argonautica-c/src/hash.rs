@@ -7,7 +7,10 @@ use argonautica::input::Salt;
 use argonautica::Hasher;
 use libc::{c_char, c_int};
 
-use {argonautica_backend_t, argonautica_error_t, argonautica_variant_t, argonautica_version_t};
+use {
+    crate::argonautica_backend_t, crate::argonautica_error_t, crate::argonautica_variant_t,
+    crate::argonautica_version_t,
+};
 
 /// Function that hashes a password. It will modify the provided `encoded` buffer
 /// and return an `argonautica_error_t` indicating whether or not the hash was successful.
@@ -164,8 +167,10 @@ pub extern "C" fn argonautica_hash(
 mod tests {
     use std::ffi::CString;
 
+    use crate::argonautica_encoded_len;
+
     use super::*;
-    use {argonautica_encoded_len, argonautica_variant_t};
+    use argonautica_variant_t;
 
     #[test]
     fn test_clearing() {

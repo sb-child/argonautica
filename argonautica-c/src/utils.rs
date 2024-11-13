@@ -3,7 +3,7 @@
 use itoa;
 use libc::c_int;
 
-use argonautica_variant_t;
+use crate::argonautica_variant_t;
 
 fn base64_len(len: u32) -> usize {
     let bits = 8 * len as usize;
@@ -22,22 +22,11 @@ pub extern "C" fn argonautica_encoded_len(
     salt_len: u32,
     variant: argonautica_variant_t,
 ) -> c_int {
-    let mut buf = [0u8; 1024];
-
     let fixed_len = 17; // $$$$$v=19m=t=p=,,
     let hash_len = base64_len(hash_len);
-    let iterations_len = match itoa::write(&mut buf[..], iterations) {
-        Ok(bytes_written) => bytes_written,
-        Err(_) => return -1,
-    };
-    let lanes_len = match itoa::write(&mut buf[..], lanes) {
-        Ok(bytes_written) => bytes_written,
-        Err(_) => return -1,
-    };
-    let memory_size_len = match itoa::write(&mut buf[..], memory_size) {
-        Ok(bytes_written) => bytes_written,
-        Err(_) => return -1,
-    };
+    let iterations_len = itoa::Buffer::new().format(iterations).len();
+    let lanes_len = itoa::Buffer::new().format(lanes).len();
+    let memory_size_len = itoa::Buffer::new().format(memory_size).len();
     let salt_len = base64_len(salt_len);
     let variant_len = match variant {
         argonautica_variant_t::ARGONAUTICA_ARGON2D => 7,
