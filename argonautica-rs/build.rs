@@ -2,7 +2,6 @@ extern crate bindgen;
 extern crate cc;
 #[macro_use]
 extern crate cfg_if;
-extern crate failure;
 extern crate tempfile;
 
 use std::env;
@@ -25,7 +24,7 @@ cfg_if! {
     }
 }
 
-fn main() -> Result<(), failure::Error> {
+fn main() -> anyhow::Result<()> {
     let temp = tempfile::tempdir()?;
     let temp_dir = temp.path();
     let temp_dir_str = temp_dir.to_str().unwrap();
@@ -106,10 +105,10 @@ fn main() -> Result<(), failure::Error> {
         .ctypes_prefix("libc")
         .layout_tests(true)
         .raw_line("use libc;")
-        .rust_target(bindgen::RustTarget::Stable_1_77)
+        .rust_target(bindgen::RustTarget::stable(77, 0).ok().unwrap())
         .formatter(bindgen::Formatter::None)
         .generate()
-        .map_err(|_| failure::err_msg("failed to generate bindings"))?;
+        .map_err(|_| anyhow::anyhow!("failed to generate bindings"))?;
     bindings.write_to_file(file_path)?;
 
     Ok(())

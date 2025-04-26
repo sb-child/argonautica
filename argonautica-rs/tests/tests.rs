@@ -1,5 +1,4 @@
 extern crate argonautica;
-extern crate failure;
 #[macro_use]
 extern crate lazy_static;
 extern crate rand;
@@ -10,7 +9,7 @@ use std::sync::Mutex;
 
 use argonautica::config::{Variant, Version};
 use argonautica::{Hasher, Verifier};
-use rand::distributions::Alphanumeric;
+use rand::distr::Alphanumeric;
 use rand::Rng;
 
 lazy_static! {
@@ -69,7 +68,7 @@ fn generate_args(input: &Input) -> Vec<String> {
     let additional_data = if input.additional_data_len == 0 {
         "".to_string()
     } else {
-        rand::thread_rng()
+        rand::rng()
             .sample_iter(&Alphanumeric)
             .take(input.additional_data_len)
             .map(char::from)
@@ -78,18 +77,18 @@ fn generate_args(input: &Input) -> Vec<String> {
     let secret_key = if input.secret_key_len == 0 {
         "".to_string()
     } else {
-        rand::thread_rng()
+        rand::rng()
             .sample_iter(&Alphanumeric)
             .take(input.secret_key_len)
             .map(char::from)
             .collect::<String>()
     };
-    let password = rand::thread_rng()
+    let password = rand::rng()
         .sample_iter(&Alphanumeric)
         .take(input.password_len)
         .map(char::from)
         .collect::<String>();
-    let salt = rand::thread_rng()
+    let salt = rand::rng()
         .sample_iter(&Alphanumeric)
         .take(input.salt_len)
         .map(char::from)
@@ -154,8 +153,8 @@ fn parse_stderr(stderr: &[u8]) -> (String, Vec<u8>) {
         .replace("]", "")
         .split(",")
         .into_iter()
-        .map(|s| Ok::<_, failure::Error>(s.parse::<u8>()?))
-        .collect::<Result<Vec<u8>, failure::Error>>()
+        .map(|s| Ok::<_, anyhow::Error>(s.parse::<u8>()?))
+        .collect::<Result<Vec<u8>, anyhow::Error>>()
         .expect("unable to parse hash from C stderr");
     (encoded, hash)
 }
@@ -335,16 +334,16 @@ fn parse_stderr_c(stderr: &[u8]) -> (String, String, Vec<u8>, Vec<u8>) {
         .replace("]", "")
         .split(",")
         .into_iter()
-        .map(|s| Ok::<_, failure::Error>(s.parse::<u8>()?))
-        .collect::<Result<Vec<u8>, failure::Error>>()
+        .map(|s| Ok::<_, anyhow::Error>(s.parse::<u8>()?))
+        .collect::<Result<Vec<u8>, anyhow::Error>>()
         .expect("unable to parse hash from C stderr");
     let hash2 = v[3]
         .replace("[", "")
         .replace("]", "")
         .split(",")
         .into_iter()
-        .map(|s| Ok::<_, failure::Error>(s.parse::<u8>()?))
-        .collect::<Result<Vec<u8>, failure::Error>>()
+        .map(|s| Ok::<_, anyhow::Error>(s.parse::<u8>()?))
+        .collect::<Result<Vec<u8>, anyhow::Error>>()
         .expect("unable to parse hash from C stderr");
     (encoded1, encoded2, hash1, hash2)
 }

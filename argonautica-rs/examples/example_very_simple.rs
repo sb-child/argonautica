@@ -1,9 +1,8 @@
 extern crate argonautica;
-extern crate failure;
 
 use argonautica::{Hasher, Verifier};
 
-fn main() -> Result<(), failure::Error> {
+fn main() -> Result<(), anyhow::Error> {
     let mut hasher = Hasher::default();
     let hash = hasher
         .with_password("P@ssw0rd")

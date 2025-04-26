@@ -1,7 +1,5 @@
-use rand::rngs::OsRng;
-use rand::RngCore;
-
 use crate::{Error, ErrorKind};
+use rand::{rngs::OsRng, TryRngCore};
 
 impl Default for Salt {
     /// Creates a new <u>random</u> `Salt`.

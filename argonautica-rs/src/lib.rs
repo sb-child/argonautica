@@ -278,10 +278,6 @@
 extern crate base64;
 #[macro_use]
 extern crate bitflags;
-// #[cfg(feature = "development")]
-// extern crate blake2_rfc;
-#[macro_use]
-extern crate failure;
 extern crate futures;
 extern crate libc;
 #[macro_use]

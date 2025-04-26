@@ -1,7 +1,6 @@
 //! Utility functions for generating random bytes, which can be useful for generating
 //! [`SecretKey`](input/struct.SecretKey.html)s, for example.
-use rand::rngs::OsRng;
-use rand::RngCore;
+use rand::{rngs::OsRng, TryRngCore};
 
 use crate::{Error, ErrorKind};
 

@@ -1,6 +1,6 @@
-use std::fmt;
-
 use crate::ErrorKind;
+use std::fmt;
+use thiserror::Error;
 
 impl fmt::Debug for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -27,7 +27,7 @@ impl From<ErrorKind> for Error {
 /// Struct representing an error, which implements the
 /// [`Fail`](https://docs.rs/failure/0.1.1/failure/trait.Fail.html) trait
 /// from [failure](https://github.com/rust-lang-nursery/failure)
-#[derive(Fail, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Error, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 pub struct Error {

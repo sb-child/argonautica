@@ -1,5 +1,4 @@
 extern crate argonautica;
-extern crate failure;
 extern crate num_cpus;
 
 use std::time::Instant;
@@ -16,7 +15,7 @@ pub const SALT_LEN: u32 = 32;
 pub const VARIANT: Variant = Variant::Argon2id;
 pub const VERSION: Version = Version::_0x13;
 
-fn main() -> Result<(), failure::Error> {
+fn main() -> Result<(), anyhow::Error> {
     let salt = Salt::random(SALT_LEN);
     let secret_key =
         SecretKey::from_base64_encoded("t9nGEsDxjWtJYdYeExdB6/HU0vg+rT6czv6HSjVjZng=")?;
