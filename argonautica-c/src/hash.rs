@@ -74,7 +74,7 @@ use {
 /// * Version:
 ///     * `version` = `ARGONAUTICA_0x10` for 0x10
 ///     * `version` = `ARGONAUTICA_0x13` for 0x13
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn argonautica_hash(
     encoded: *mut c_char,
     additional_data: *const u8,

@@ -1,17 +1,14 @@
 [package]
 name = "argonautica-c"
 version = "0.2.1"      # remember to update html_root_url
-edition = "2021"
-
+edition = "2024"
 authors = ["Brian Myers <brian.carl.myers@gmail.com>"]
 categories = ["algorithms", "api-bindings", "authentication", "cryptography"]
 description = "C/C++ wrapper for argonautica"
 documentation = "https://docs.rs/argonautica-c"
-homepage = "https://github.com/bcmyers/argonautica"
 keywords = ["argon2", "cryptography", "hash", "password", "security"]
 license = "MIT/Apache-2.0"
 publish = true
-readme = "README.md"
 repository = "https://github.com/bcmyers/argonautica"
 
 [lib]
@@ -20,17 +17,17 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [[bin]]
-name = "generate_bindings"
+name = "generate-bindings"
 path = "src/bin/generate_bindings.rs"
 
 [features]
 simd = ["argonautica/simd"]
 
 [dependencies]
-argonautica = { version = "0.2", path = "../argonautica-rs" }
-cbindgen = "0.29.0"
-itoa = "1.0.11"
+cbindgen = "0.29.4"
+itoa = "1.0.18"
 libc = "0.2"
+argonautica = { version = "0.2", path = "../argonautica-rs" }
 
 [badges]
 travis-ci = { repository = "bcmyers/argonautica", branch = "master" }

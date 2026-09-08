@@ -10,9 +10,9 @@ impl<'a> Container<'a> {
     #[allow(missing_docs)]
     pub fn to_owned(&self) -> Container<'static> {
         match self {
-            Container::Borrowed(ref bytes) => Container::Owned(bytes.to_vec()),
-            Container::BorrowedMut(ref bytes) => Container::Owned(bytes.to_vec()),
-            Container::Owned(ref bytes) => Container::Owned(bytes.to_vec()),
+            Container::Borrowed(bytes) => Container::Owned(bytes.to_vec()),
+            Container::BorrowedMut(bytes) => Container::Owned(bytes.to_vec()),
+            Container::Owned(bytes) => Container::Owned(bytes.to_vec()),
         }
     }
 }

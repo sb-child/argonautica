@@ -4,7 +4,7 @@ use argonautica::Error;
 use libc::c_char;
 
 /// Given an `argonautica_error_t`, this function will return an error message as a static `char*`
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn argonautica_error_msg(err: argonautica_error_t) -> *const c_char {
     err.to_str()
 }

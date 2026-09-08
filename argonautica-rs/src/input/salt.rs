@@ -1,5 +1,5 @@
 use crate::{Error, ErrorKind};
-use rand::{rngs::OsRng, TryRngCore};
+use rand::{TryRng as _, rngs::SysRng};
 
 impl Default for Salt {
     /// Creates a new <u>random</u> `Salt`.
@@ -120,7 +120,7 @@ impl Salt {
     pub fn update(&mut self) -> Result<(), Error> {
         match self.0 {
             Kind::Random(ref mut bytes) => {
-                OsRng
+                SysRng
                     .try_fill_bytes(bytes)
                     .map_err(|_| Error::new(ErrorKind::OsRngError))?;
             }
@@ -138,7 +138,7 @@ impl Salt {
                 Error::new(ErrorKind::SaltTooShortError).add_context(format!("Length: {}", len))
             );
         }
-        if len >= ::std::u32::MAX as usize {
+        if len >= u32::MAX as usize {
             return Err(
                 Error::new(ErrorKind::SaltTooLongError).add_context(format!("Length: {}", len))
             );

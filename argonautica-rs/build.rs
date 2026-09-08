@@ -78,10 +78,6 @@ fn main() -> anyhow::Result<()> {
             .flag_if_supported("-march=native")
             .flag_if_supported("-fno-stack-check");
     }
-    if IS_STATIC {
-        builder.static_flag(true);
-        // builder.shared_flag(shared_flag);
-    }
     let opt_level = env::var("OPT_LEVEL")?.parse::<usize>()?;
     if opt_level < 3 {
         builder.flag_if_supported("-g");
@@ -105,7 +101,7 @@ fn main() -> anyhow::Result<()> {
         .ctypes_prefix("libc")
         .layout_tests(true)
         .raw_line("use libc;")
-        .rust_target(bindgen::RustTarget::stable(77, 0).ok().unwrap())
+        .rust_target(bindgen::RustTarget::default())
         .formatter(bindgen::Formatter::None)
         .generate()
         .map_err(|_| anyhow::anyhow!("failed to generate bindings"))?;

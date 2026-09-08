@@ -1,14 +1,13 @@
 //! Utility functions for generating random bytes, which can be useful for generating
 //! [`SecretKey`](input/struct.SecretKey.html)s, for example.
-use rand::{rngs::OsRng, TryRngCore};
-
 use crate::{Error, ErrorKind};
+use rand::{TryRng as _, rngs::SysRng};
 
 /// A utility function for generating cryptographically-secure random bytes. A quick glance at
 /// this function's source should give you a good idea of what the function is doing.
 pub fn generate_random_bytes(len: u32) -> Result<Vec<u8>, Error> {
     let mut bytes = vec![0u8; len as usize];
-    OsRng
+    SysRng
         .try_fill_bytes(&mut bytes)
         .map_err(|e| Error::new(ErrorKind::OsRngError).add_context(format!("{}", e)))?;
     Ok(bytes)
@@ -22,7 +21,7 @@ pub fn generate_random_bytes(len: u32) -> Result<Vec<u8>, Error> {
 pub fn generate_random_base64_encoded_string(len: u32) -> Result<String, Error> {
     let mut bytes = vec![0u8; len as usize];
     use base64::prelude::*;
-    OsRng
+    SysRng
         .try_fill_bytes(&mut bytes)
         .map_err(|e| Error::new(ErrorKind::OsRngError).add_context(format!("{}", e)))?;
     let output = BASE64_STANDARD.encode(&bytes);
@@ -39,7 +38,7 @@ pub fn generate_random_base64_encoded_string_config(
     config: &impl base64::Engine,
 ) -> Result<String, Error> {
     let mut bytes = vec![0u8; len as usize];
-    OsRng
+    SysRng
         .try_fill_bytes(&mut bytes)
         .map_err(|e| Error::new(ErrorKind::OsRngError).add_context(format!("{}", e)))?;
     let output = base64::Engine::encode(config, &bytes);

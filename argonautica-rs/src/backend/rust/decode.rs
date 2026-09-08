@@ -1,5 +1,5 @@
-use nom::bytes::complete::{take, take_until};
 use nom::IResult;
+use nom::bytes::complete::{take, take_until};
 
 use crate::config::{Variant, Version};
 use crate::output::HashRaw;
@@ -120,7 +120,7 @@ fn parse_hash(input: &str) -> IResult<&str, IntermediateStruct> {
 #[cfg(test)]
 mod tests {
     use rand::rngs::StdRng;
-    use rand::{RngCore, SeedableRng};
+    use rand::{Rng as _, SeedableRng};
 
     use super::*;
     use crate::backend::c::decode_c;

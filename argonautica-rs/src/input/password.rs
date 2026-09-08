@@ -173,7 +173,7 @@ impl<'a> Password<'a> {
         if self.len() == 0 {
             return Err(Error::new(ErrorKind::PasswordTooShortError));
         }
-        if self.len() >= ::std::u32::MAX as usize {
+        if self.len() >= u32::MAX as usize {
             return Err(Error::new(ErrorKind::PasswordTooLongError)
                 .add_context(format!("Length: {}", self.len())));
         }

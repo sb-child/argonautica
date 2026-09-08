@@ -69,7 +69,7 @@ impl AdditionalData {
 
 impl AdditionalData {
     pub(crate) fn validate(&self) -> Result<(), Error> {
-        if self.len() >= ::std::u32::MAX as usize {
+        if self.len() >= u32::MAX as usize {
             return Err(Error::new(ErrorKind::AdditionalDataTooLongError)
                 .add_context(format!("Length: {}", self.0.len())));
         }

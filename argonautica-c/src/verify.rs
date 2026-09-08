@@ -18,7 +18,7 @@ use {crate::argonautica_backend_t, crate::argonautica_error_t};
 ///
 /// For a description of the other arguments, see the documentation for
 /// `argonautica_hash`
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn argonautica_verify(
     is_valid: *mut c_int,
     additional_data: *const u8,

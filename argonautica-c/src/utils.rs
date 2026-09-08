@@ -13,7 +13,7 @@ fn base64_len(len: u32) -> usize {
 
 /// Function that returns the length of a string-encoded hash (in bytes and including the NULL byte).
 /// If an error occurrs, the function returns -1
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn argonautica_encoded_len(
     hash_len: u32,
     iterations: u32,

@@ -9,8 +9,8 @@ use std::sync::Mutex;
 
 use argonautica::config::{Variant, Version};
 use argonautica::{Hasher, Verifier};
+use rand::RngExt as _;
 use rand::distr::Alphanumeric;
-use rand::Rng;
 
 lazy_static! {
     static ref BUILD_EXISTS: Mutex<bool> = Mutex::new(false);

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required(VERSION 4.3)
 project (tests)
 
 if(NOT CMAKE_BUILD_TYPE)
